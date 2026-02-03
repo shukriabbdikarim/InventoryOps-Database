@@ -1,77 +1,130 @@
-InventoryOps-Database,
+# InventoryOps
 
-Detta repository innehåller SQL-script för en relationsdatabas i SQL Server.
-Projektet är en databasinlämning som visar hur man skapar, strukturerar och hanterar en databas för ett enkelt inventory- och ordersystem.
-
----
-
-Innehåll,
-Projektet innehåller script för:
-Skapande av databas,
-Skapande av tabeller med relationer,
-Testdata (seed data),
-CRUD-exempel,
-Queries med JOINs,
-Views för rapportering,
-Säkerhet (login, user och roller),
-Cleanup-script,
-
-Ett databasdiagram finns också med som visar tabellernas relationer.
+Inventory- och ordersystem med SQL Server-databas och .NET 8.0 Console App (EF Core, Database First).
 
 ---
 
-Beskrivning av script,
+## Scenario
 
-01_create_database.sql
-Skapar databasen InventoryOps om den inte redan finns.
+InventoryOps hanterar kunder, leverantörer, produkter, ordrar och lagerrörelser.
+Systemet består av:
 
-02_create_tables.sql
-Skapar samtliga tabeller med primärnycklar, främmande nycklar och constraints.
-
-03_seed_data.sql
-Lägger in exempeldata för testning.
-
-04_crud_examples.sql
-Visar exempel på INSERT, SELECT, UPDATE och DELETE.
-
-05_queries_joins.sql
-Innehåller SELECT-frågor med JOINs och sortering.
-
-06_views.sql
-Skapar views för rapportering, bland annat senaste ordrar med kundinformation.
-
-07_security.sql
-Skapar login, user och role samt tilldelar rättigheter via views.
-
-08_cleanup.sql
-Tar bort views och tabeller i korrekt ordning.
-Körs endast manuellt vid behov.
+1. **SQL Server-databas** med tabeller, views, säkerhet och testdata
+2. **.NET 8.0 Console App** som använder EF Core (Database First) för CRUD-operationer och rapporter
 
 ---
 
-Databasdiagram,
-Databasens struktur visas i filen:
+## Projektstruktur
 
-InventoryOps-Diagram.png
-
----
-
-Rekommenderad körordning,
-01_create_database.sql,
-02_create_tables.sql,
-03_seed_data.sql,
-04_crud_examples.sql,
-05_queries_joins.sql,
-06_views.sql,
-07_security.sql,
-08_cleanup.sql körs endast om databasen ska rensas.
+```
+├── InventoryOps-Database-main.sln    # Visual Studio solution
+├── InventoryOps.ConsoleApp/          # .NET 8.0 Console App
+│   ├── Data/                         # DbContext
+│   ├── Models/                       # EF Core-modeller
+│   ├── Services/                     # CRUD och rapportlogik
+│   ├── Menus/                        # Konsolmenyer
+│   └── Helpers/                      # Input-validering, UX-hjälpare
+├── sql/                              # SQL-script (körs i ordning 01–08)
+├── erd/                              # Databasdiagram
+└── screenshots/                      # Skärmbilder (fylls i manuellt)
+```
 
 ---
 
-Teknik,
-SQL Server,
-T-SQL,
-Visual Studio / SSMS,
-Git och GitHub,
+## Kom igång
+
+### 1. Skapa databasen
+
+Kör SQL-scripten i SQL Server Management Studio (SSMS) i denna ordning:
+
+```
+sql/01_create_database.sql
+sql/02_create_tables.sql
+sql/03_seed_data.sql
+sql/06_views.sql
+sql/07_security.sql
+```
+
+### 2. Starta Console App
+
+Öppna `InventoryOps-Database-main.sln` i Visual Studio 2022 och tryck **F5** (eller Ctrl+F5).
+
+Alternativt via terminal:
+```bash
+dotnet run --project InventoryOps.ConsoleApp
+```
+
+> **Anslutningssträng**: Ändra i `Program.cs` om din SQL Server-instans skiljer sig.
+> Standard: `Server=localhost;Database=InventoryOps;Trusted_Connection=True;TrustServerCertificate=True;`
 
 ---
+
+## Database First (Scaffold)
+
+Om du vill scaffold:a modellerna direkt från databasen (istället för att använda de manuellt skapade):
+
+```bash
+cd InventoryOps.ConsoleApp
+
+dotnet ef dbcontext scaffold "Server=localhost;Database=InventoryOps;Trusted_Connection=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer --output-dir Models --context-dir Data --context InventoryOpsContext --force
+```
+
+---
+
+## Menyflöde
+
+```
+=== InventoryOps ===
+1. Kunder
+   ├── 1. Lista alla kunder
+   ├── 2. Skapa ny kund
+   ├── 3. Uppdatera kund
+   ├── 4. Ta bort kund
+   └── 0. Tillbaka
+2. Produkter
+   ├── 1. Lista alla produkter
+   ├── 2. Ändra status (Active/Inactive)
+   └── 0. Tillbaka
+3. Ordrar
+   ├── 1. Lista alla ordrar
+   ├── 2. Skapa ny order
+   ├── 3. Lägg till orderrad
+   └── 0. Tillbaka
+4. Rapporter
+   ├── 1. Top 5 kunder (flest ordrar)
+   ├── 2. Lågt lager (under 10)
+   ├── 3. Senaste 20 lagerrörelser
+   ├── 4. Omsättning per produkt
+   └── 0. Tillbaka
+0. Avsluta
+```
+
+---
+
+## Beskrivning av SQL-script
+
+| Script | Beskrivning |
+|---|---|
+| `01_create_database.sql` | Skapar databasen InventoryOps |
+| `02_create_tables.sql` | Skapar tabeller med PK, FK och constraints |
+| `03_seed_data.sql` | Lägger in testdata |
+| `04_crud_examples.sql` | Visar INSERT, SELECT, UPDATE, DELETE |
+| `05_queries_joins.sql` | SELECT med JOINs, GROUP BY, aggregering |
+| `06_views.sql` | Views för rapportering |
+| `07_security.sql` | Login, user, role och rättigheter |
+| `08_cleanup.sql` | Tar bort views och tabeller (manuellt) |
+
+---
+
+## Databasdiagram
+
+Se `erd/InventoryOps-Diagram.png`
+
+---
+
+## Teknik
+
+- SQL Server / T-SQL
+- .NET 8.0
+- Entity Framework Core 8.0 (Database First)
+- C# Console App
