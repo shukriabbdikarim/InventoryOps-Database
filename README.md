@@ -21,6 +21,7 @@ Ett databasdiagram finns också med som visar tabellernas relationer.
 ---
 
 Beskrivning av script,
+
 01_create_database.sql
 Skapar databasen InventoryOps om den inte redan finns.
 
