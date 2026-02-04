@@ -5,7 +5,7 @@ using InventoryOps.ConsoleApp.Services;
 
 // Anslutningssträng – ändra vid behov
 const string connectionString =
-    @"Server=PAPPAS\SQLEXPRESS;Database=InventoryOps;Trusted_Connection=True;TrustServerCertificate=True;";
+    @"Server=localhost\SQLEXPRESS;Database=InventoryOps;Trusted_Connection=True;TrustServerCertificate=True;";
 
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 
